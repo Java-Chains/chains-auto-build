@@ -109,8 +109,8 @@ jobs:
           name: release-${{ inputs.version }}
           path: release/
 
-  # 根据标签发布
-  release:
+
+  update_release_draft:
     needs: build
     runs-on: ubuntu-latest
 
@@ -124,14 +124,11 @@ jobs:
       - name: Create Release
         id: create_release
         #        uses: actions/create-release@v1
-        uses: release-drafter/release-drafter@v5
+        uses: release-drafter/release-drafter@v6
         env:
           GITHUB_TOKEN: ${{ secrets.DEPENDENCY_REPO_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release inputs.version
-          body: |
-            Release of version inputs.version
+          tag_name: ${{ inputs.version }}
 
       - name: Upload Web-Chains Release Asset
         id: upload-web-chains-release-asset
@@ -141,7 +138,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: release/web-chains.jar
-          asset_name: web-chains-${{ github.ref_name }}.jar
+          asset_name: web-chains-${{ inputs.version }}.jar
           asset_content_type: application/java-archive
 
       - name: Upload Chains-All Release Asset
@@ -152,7 +149,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: release/chains-all.jar
-          asset_name: chains-all-${{ github.ref_name }}.jar
+          asset_name: chains-all-${{ inputs.version }}.jar
           asset_content_type: application/java-archive
 
       - name: Clone chains-config And Create Distribution Archive
@@ -170,5 +167,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: release/web-chains-all.tar.gz
-          asset_name: web-chains-${{ github.ref_name }}-all.tar.gz
+          asset_name: web-chains-${{ inputs.version }}-all.tar.gz
           asset_content_type: application/gzip
