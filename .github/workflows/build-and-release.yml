@@ -113,7 +113,6 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Download Artifact
@@ -124,14 +123,15 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        #        uses: actions/create-release@v1
+        uses: release-drafter/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.DEPENDENCY_REPO_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          release_name: Release inputs.version
           body: |
-            Release of version ${{ github.ref_name }}
+            Release of version inputs.version
 
       - name: Upload Web-Chains Release Asset
         id: upload-web-chains-release-asset
