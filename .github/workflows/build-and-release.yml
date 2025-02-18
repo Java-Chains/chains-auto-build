@@ -110,7 +110,7 @@ jobs:
           path: release/
 
 
-  update_release_draft:
+  release_draft:
     needs: build
     permissions: write-all
     runs-on: ubuntu-latest
